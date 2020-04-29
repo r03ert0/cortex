@@ -13,6 +13,10 @@ int main(int argc, char *argv[])
 	int		i;
 	int		a,b,c;
 	float	x,y,z;
+	int		flag3=0;
+
+	if(strcmp(argv[3],"3")==0)
+		flag3=1;
 	
 	while(!feof(fi) && !flag)
 	{
@@ -47,14 +51,29 @@ int main(int argc, char *argv[])
 	}
 	
 	fwrite(&np,1,sizeof(int),fo);
-	fwrite(&nt,1,sizeof(int),fo);	
-	for(i=0;i<np;i++)
+	fwrite(&nt,1,sizeof(int),fo);
+	if(flag3)
 	{
-		fgets(str,512,fi);
-		sscanf(str," %f %f %f ",&x,&y,&z);
-		fwrite(&x,1,sizeof(float),fo);
-		fwrite(&y,1,sizeof(float),fo);
+		for(i=0;i<np;i++)
+		{
+			fgets(str,512,fi);
+			sscanf(str," %f %f %f ",&x,&y,&z);
+			fwrite(&x,1,sizeof(float),fo);
+			fwrite(&y,1,sizeof(float),fo);
+			fwrite(&z,1,sizeof(float),fo);
+		}
 	}
+	else
+	{
+		for(i=0;i<np;i++)
+		{
+			fgets(str,512,fi);
+			sscanf(str," %f %f %f ",&x,&y,&z);
+			fwrite(&x,1,sizeof(float),fo);
+			fwrite(&y,1,sizeof(float),fo);
+		}
+	}
+	
 	for(i=0;i<nt;i++)
 	{
 		fgets(str,512,fi);
