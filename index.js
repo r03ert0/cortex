@@ -101,6 +101,9 @@ let rightLUT;
 let leftAnnot2009s;
 let rightAnnot2009s;
 
+let globalMin = null;
+let globalMax = null;
+
 function screenshot() {
   let imgData;
   let svgData;
@@ -364,13 +367,14 @@ function loadLUT(content) {
 function onWindowResize() {
   renderer.render(scene, camera);
 }
-function redraw() {
+function redraw(minMax) {
   const n=parseInt(jet.length/3);
-  let max, min;
   var B, G, R, v0, v1;
+  let max, min;
 
-  // Find data min/max
-  if(typeof leftData.data !== "undefined" && typeof rightData.data !== "undefined") {
+  if(typeof minMax !== "undefined") {
+    ({min, max} = minMax);
+  } else if(typeof leftData.data !== "undefined" && typeof rightData.data !== "undefined") {
     min=Math.min(leftData.min, rightData.min);
     max=Math.max(leftData.max, rightData.max);
   } else if(typeof leftData.data !== "undefined") {
@@ -378,6 +382,10 @@ function redraw() {
   } else if(typeof rightData.data !== "undefined") {
     ({min, max} = rightData.min);
   }
+
+  document.getElementById("min").value = parseInt(min*1000)/1000;
+  document.getElementById("max").value = parseInt(max*1000)/1000;
+
   makeColorbar({
     min: parseInt(min*100)/100,
     max: parseInt(max*100)/100,
@@ -441,10 +449,15 @@ function findMinMax(data) {
     if(val<min) { min = val; }
     if(val>max) { max = val; }
   }
-  obj.min=min;
-  obj.max=max;
+  obj.min=parseInt(min*1000)/1000;
+  obj.max=parseInt(max*1000)/1000;
 
   return obj;
+}
+function adjustMinMax() {
+  globalMin = document.getElementById("min").value;
+  globalMax = document.getElementById("max").value;
+  redraw({min: globalMin, max: globalMax});
 }
 function configureData(data, hemisphere) {
   const obj=findMinMax(data);
@@ -454,11 +467,15 @@ function configureData(data, hemisphere) {
     leftData.data=data;
     leftData.min=obj.min;
     leftData.max=obj.max;
+    document.getElementById("minLeft").textContent = parseInt(obj.min*1000)/1000;
+    document.getElementById("maxLeft").textContent = parseInt(obj.max*1000)/1000;
     break;
   case "rightFile":
     rightData.data=data;
     rightData.min=obj.min;
     rightData.max=obj.max;
+    document.getElementById("minRight").textContent = parseInt(obj.min*1000)/1000;
+    document.getElementById("maxRight").textContent = parseInt(obj.max*1000)/1000;
     break;
   }
 }
@@ -676,11 +693,15 @@ function loadFloatData(content, id) {
     leftData.data=tmp;
     leftData.min=obj.min;
     leftData.max=obj.max;
+    document.getElementById("minLeft").textContent = parseInt(obj.min*1000)/1000;
+    document.getElementById("maxLeft").textContent = parseInt(obj.max*1000)/1000;
     break;
   case "rightFile":
     rightData.data=tmp;
     rightData.min=obj.min;
     rightData.max=obj.max;
+    document.getElementById("minRight").textContent = parseInt(obj.min*1000)/1000;
+    document.getElementById("maxRight").textContent = parseInt(obj.max*1000)/1000;
     break;
   }
   redraw();
@@ -738,6 +759,12 @@ function loadCSVAnnotationData(content) {
   const rightMinMax = findMinMax(rightData.data);
   rightData.min = rightMinMax.min;
   rightData.max = rightMinMax.max;
+
+  // display min and max
+  document.getElementById("minLeft").textContent = parseInt(leftData.min*1000)/1000;
+  document.getElementById("maxLeft").textContent = parseInt(leftData.max*1000)/1000;
+  document.getElementById("minRight").textContent = parseInt(rightData.min*1000)/1000;
+  document.getElementById("maxRight").textContent = parseInt(rightData.max*1000)/1000;
 
   // redraw
   colormapType = 'continuous';

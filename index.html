@@ -13,20 +13,48 @@
 			<td>
 				<!-- Controls -->
 				<div>
+          <p><b>Left data</b></p>
+          <input type="file" id="leftFile" name="files[]"/><br/>
+          <p>Min: <span id="minLeft"></span></p>
+          <p>Max: <span id="maxLeft"></span></p>
 
-					<button onclick="view('left')">Left</button>
-					<button onclick="view('right')">Right</button>
-					<button onclick="view('sup')">Sup</button>
-					<button onclick="view('inf')">Inf</button>
-					<button onclick="view('ant')">Ant</button>
-					<button onclick="view('pos')">Post</button>
-					<button onclick="view('flat')">Flat</button>
-					<br />
-					Left hemisphere data<br>
-					<input type="file" id="leftFile" name="files[]"/><br/>
-					Right hemisphere data<br>
+          <p><b>Right hemisphere data</b></p>
 					<input type="file" id="rightFile" name="files[]"/><br/>
-					<p id="progress" />
+          <p>Min: <span id="minRight"></span></p>
+          <p>Max: <span id="maxRight"></span></p>
+
+          <p id="progress" />
+
+          <p><b>Colormap range</b></p>
+          <p>Min <input id="min" type="text" onchange="adjustMinMax()" /></p>
+          <p>Max <input id="max" type="text" onchange="adjustMinMax()" /></p>
+
+          <p><b>Orientation</b></p>
+          <style>
+            #view rect {
+              fill:lightGrey;
+              stroke:white;
+            }
+            #view text {
+              pointer-events: none;
+            }
+          </style>
+          <svg id="view" style="width:160px;height:120px">
+            <rect x="0" y="40" width="40" height="40" onclick="view('ant')" />
+            <rect x="40" y="0" width="40" height="40" onclick="view('sup')" />
+            <rect x="40" y="40" width="40" height="40" onclick="view('left')" />
+            <rect x="40" y="80" width="40" height="40" onclick="view('inf')" />
+            <rect x="80" y="40" width="40" height="40" onclick="view('pos')" />
+            <rect x="120" y="40" width="40" height="40" onclick="view('right')" />
+            <text x="20" y="60" dominant-baseline="middle" text-anchor="middle">Ant</text>
+            <text x="60" y="20" dominant-baseline="middle" text-anchor="middle">Sup</text>
+            <text x="60" y="60" dominant-baseline="middle" text-anchor="middle">Left</text>
+            <text x="60" y="100" dominant-baseline="middle" text-anchor="middle">Inf</text>
+            <text x="100" y="60" dominant-baseline="middle" text-anchor="middle">Pos</text>
+            <text x="140" y="60" dominant-baseline="middle" text-anchor="middle">Right</text>
+          </svg>
+          <br />
+					<button onclick="view('flat')">Flat</button>
 				
 				</div>
 			</td>
